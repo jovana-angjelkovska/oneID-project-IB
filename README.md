@@ -26,6 +26,7 @@ Users can generate cryptographic key pairs, sign documents digitally, and verify
 ---
 
 ## 📂 Project Structure
+```text
 oneid-project/
 ├── app.py
 ├── crypto_utils.py
@@ -35,7 +36,7 @@ oneid-project/
 ├── static/
 ├── keys/
 ├── oneid.db
-
+```
 
 ---
 
