@@ -1,0 +1,155 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+}
+
+/* Center card layout */
+.center-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main card */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+.btn-custom {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Titles */
+h1, h2 {
+    color: #0f172a;
+}
+
+/* Inputs */
+input, textarea {
+    border-radius: 10px !important;
+}
+
+.card {
+    border: none;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    min-width: 420px;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-card {
+    width: 450px;
+    background: white;
+    border-radius: 28px;
+}
+
+.sign-card {
+    width: 750px;
+}
+
+.dashboard-card {
+    width: 600px;
+    text-align: center;
+}
+
+.btn-oneid {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-oneid:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+    color: white;
+}
+
+.btn-oneid-outline {
+    background: white;
+    border: 2px solid #3b82f6;
+    color: #2563eb;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-oneid-outline:hover {
+    background: #eff6ff;
+    transform: translateY(-2px);
+}
+
+.btn-oneid-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-oneid-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(220, 38, 38, 0.25);
+}
+
+.app-card {
+    width: 520px;
+    max-width: 95%;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+h1, h2 {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.subtitle {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.mt-section {
+    margin-top: 20px;
+}
+
+.mb-section {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.2rem rgba(59,130,246,0.15);
+}
+
+
+

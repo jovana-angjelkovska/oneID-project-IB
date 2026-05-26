@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="center-wrapper">
+
+    <div class="app-card text-center">
+
+        <h2 class="mb-2">Welcome, {{ username }}</h2>
+        <p class="text-muted mb-4">OneID Secure Control Panel</p>
+
+        <!-- Action Section -->
+        <div class="d-grid gap-3">
+
+            <a href="/sign" class="btn btn-outline-primary btn-lg">
+                ✍️ Sign Document
+            </a>
+
+            <a href="/verify" class="btn btn-outline-primary btn-lg">
+                🔍 Verify Signature
+            </a>
+
+            <a href="/history" class="btn btn-outline-primary btn-lg">
+                📜 Signature History
+            </a>
+
+            <hr>
+
+            <a href="/logout" class="btn btn-danger btn-lg">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

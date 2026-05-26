@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="app-card text-center">
+    <h2 class="text-center">Register</h2>
+
+    <form method="POST">
+        <input type="text" name="username" class="form-control mt-3" placeholder="Username" required>
+        <button class="btn btn-primary w-100 mt-3">Create Account</button>
+    </form>
+</div>
+{% endblock %}
