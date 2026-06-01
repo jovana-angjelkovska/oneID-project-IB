@@ -4,6 +4,13 @@ import os
 
 from crypto_utils import generate_key_pair
 from signing import sign_data, verify_signature
+import random 
+from flask import session
+
+from email_utils import (
+    generate_code,
+    send_verification_email
+)
 
 app = Flask(__name__)
 
@@ -25,62 +32,78 @@ def home():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
     if request.method == "POST":
+
         username = request.form["username"]
+        password = request.form["password"]
+        email = request.form["email"]
+        phone = request.form["phone"]
 
-        # ✅ generate real RSA keys
-        private_key, public_key = generate_key_pair()
+        email_code = generate_code()
+        phone_code = str(random.randint(100000, 999999))
 
-        # save private key to file
-        key_filename = f"keys/{username}_private.pem"
-        with open(key_filename, "w") as f:
-            f.write(private_key)
+        session["registration"] = {
+            "user": {
+                "username": username,
+                "password": password,
+                "email": email,
+                "phone": phone
+            },
+            "otp_email": email_code,
+            "otp_phone": phone_code
+        }
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
+        send_verification_email(email, email_code)
 
-        try:
-            cursor.execute(
-                "INSERT INTO users (username, public_key) VALUES (?, ?)",
-                (username, public_key)
-            )
-            conn.commit()
-        except:
-            return "User already exists"
+        print("📱 PHONE OTP CODE:", phone_code)
 
-        conn.close()
-
-        return redirect("/login")
+        return redirect("/verify-codes")
 
     return render_template("register.html")
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
+
         username = request.form["username"]
+        password = request.form["password"]
 
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        cursor.execute("""
+            SELECT * FROM users
+            WHERE username = ? AND password = ?
+        """, (username, password))
+
         user = cursor.fetchone()
         conn.close()
 
-        if user:
-            session["username"] = username
-            return redirect("/dashboard")
-        else:
-            return "User not found"
+        if not user:
+            return "Invalid username or password"
+
+        session["username"] = username
+        session["verified_identity"] = False
+
+        # If user still hasn't done identity verification
+        if user["identity_verified"] == 0:
+            return redirect("/identity-verification")
+
+        return redirect("/dashboard")
 
     return render_template("login.html")
 
-
 @app.route("/dashboard")
 def dashboard():
+
     if "username" not in session:
         return redirect("/login")
-    
+
+    if not session.get("verified_identity"):
+        return redirect("/identity-verification")
+
     return render_template("dashboard.html", username=session["username"])
 
 
@@ -203,6 +226,102 @@ def debug_signatures():
 
     return str(data)
 
+@app.route("/send-phone-code")
+def send_phone_code():
+
+    phone_code = session.get("registration", {}).get("otp_phone")
+
+    if not phone_code:
+        return redirect("/register")
+
+    print("📱 PHONE OTP CODE:", phone_code)
+
+    return redirect("/verify-codes")
+
+@app.route("/verify-codes", methods=["GET", "POST"])
+def verify_codes():
+
+    data = session.get("registration")
+
+    if not data:
+        return "Session expired. Please register again."
+
+    if request.method == "POST":
+
+        email_code = request.form["email_code"].strip()
+        phone_code = request.form["phone_code"].strip()
+
+        email_ok = email_code == data.get("otp_email")
+        phone_ok = phone_code == data.get("otp_phone")
+
+        print("DEBUG EMAIL:", data.get("otp_email"))
+        print("DEBUG PHONE:", data.get("otp_phone"))
+
+        if email_ok and phone_ok:
+
+            user = data["user"]
+
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO users (
+                    username, password, email, phone,
+                    email_verified, phone_verified,
+                    identity_verified, public_key
+                )
+                VALUES (?, ?, ?, ?, 1, 1, 0, NULL)
+            """, (
+                user["username"],
+                user["password"],
+                user["email"],
+                user["phone"]
+            ))
+
+            conn.commit()
+            conn.close()
+
+            session["verified_user"] = user
+            session.pop("registration", None)
+
+            return redirect("/verified-success")
+
+        return f"Invalid codes → email_ok={email_ok}, phone_ok={phone_ok}"
+
+    return render_template("verify_codes.html")
+
+@app.route("/verified-success")
+def verified_success():
+    return render_template("verify_success.html")
+
+@app.route("/identity-verification", methods=["GET", "POST"])
+def identity_verification():
+
+    if "username" not in session:
+        return redirect("/login")
+
+    if request.method == "POST":
+
+        id_image = request.files.get("id_image")
+        selfie = request.files.get("selfie")
+
+        if not id_image or not selfie:
+            return "Please upload both files"
+
+        session["verified_identity"] = True
+
+        return redirect("/dashboard")
+
+    return render_template("identity_verification.html")
+
 if __name__ == "__main__":
+     # TEMP DEBUG (remove later)
+    import sqlite3
+    conn = sqlite3.connect("oneid.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, password FROM users")
+    print(cursor.fetchall())
+    conn.close()
+
     app.run(debug=True)
 

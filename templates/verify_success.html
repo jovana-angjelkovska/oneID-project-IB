@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Verified{% endblock %}
+
+{% block content %}
+
+<div class="app-card text-center">
+
+    <div class="alert alert-success">
+        ✔ Both codes successfully verified!
+    </div>
+
+    <p class="text-muted">
+        Your identity has been confirmed. Redirecting to login...
+    </p>
+
+    <a href="/login" class="btn btn-primary w-100 mt-3">
+        Go to Login now
+    </a>
+
+    <p class="text-muted mt-3" style="font-size: 13px;">
+        Redirecting in <span id="countdown">10</span> seconds...
+    </p>
+
+</div>
+
+<script>
+    let timeLeft = 10;
+    const countdownEl = document.getElementById("countdown");
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        countdownEl.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            window.location.href = "/login";
+        }
+    }, 1000);
+</script>
+
+{% endblock %}

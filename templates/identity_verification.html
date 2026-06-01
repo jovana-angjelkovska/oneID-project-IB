@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Identity Verification{% endblock %}
+
+{% block content %}
+
+<div class="app-card text-center">
+
+    <h2>Identity Verification</h2>
+
+    <p class="text-muted">
+        Please upload your ID document and a selfie.
+    </p>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <label class="mt-2">Upload ID Document</label>
+        <input type="file" name="id_image" class="form-control mt-2" required>
+
+        <label class="mt-3">Upload Selfie</label>
+        <input type="file" name="selfie" class="form-control mt-2" required>
+
+        <button class="btn btn-primary w-100 mt-4">
+            Verify Identity
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

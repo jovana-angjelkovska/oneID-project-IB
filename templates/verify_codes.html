@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Codes{% endblock %}
+
+{% block content %}
+
+<div class="app-card text-center">
+
+    <h2>Two-Factor Verification</h2>
+
+    <p class="text-muted">
+        Enter the codes sent to your email and phone number.
+    </p>
+
+    <form method="POST">
+
+        <!-- EMAIL CODE -->
+        <input type="text"
+               name="email_code"
+               class="form-control mt-3"
+               placeholder="Email verification code"
+               required>
+
+        <!-- PHONE CODE -->
+        <input type="text"
+               name="phone_code"
+               class="form-control mt-3"
+               placeholder="Phone verification code"
+               required>
+
+        <button class="btn btn-primary w-100 mt-3">
+            Verify Codes
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
