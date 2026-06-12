@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Identity Result{% endblock %}
+
+{% block content %}
+
+<div class="app-card text-center">
+
+    {% if status == "success" %}
+
+        <div class="alert alert-success">
+            ✔ Identity successfully verified!
+        </div>
+
+        <p class="text-muted">
+            Your identity has been confirmed. You can now access your dashboard securely.
+        </p>
+
+        <a href="/dashboard" class="btn btn-primary w-100 mt-3">
+            Go to Dashboard
+        </a>
+
+    {% else %}
+
+        <div class="alert alert-danger">
+            ✖ Identity verification failed
+        </div>
+
+        <p class="text-muted">
+            The uploaded ID and selfie do not match. Please try again.
+        </p>
+
+        <a href="/identity-verification" class="btn btn-warning w-100 mt-3">
+            Try Again
+        </a>
+
+    {% endif %}
+
+</div>
+
+<script>
+    let timeLeft = 5;
+    const redirectUrl = "{{ '/dashboard' if status == 'success' else '/identity-verification' }}";
+
+    const timer = setInterval(() => {
+        timeLeft--;
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            window.location.href = redirectUrl;
+        }
+    }, 1000);
+</script>
+
+{% endblock %}

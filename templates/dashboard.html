@@ -6,27 +6,41 @@
 
 <div class="center-wrapper">
 
-    <div class="app-card text-center">
+    <div class="app-card">
 
-        <h2 class="mb-2">Welcome, {{ username }}</h2>
-        <p class="text-muted mb-4">OneID Secure Control Panel</p>
+        <!-- 👤 IDENTITY PROFILE SECTION -->
+        <div class="text-center mb-4">
 
-        <!-- Action Section -->
+            <h2 class="mb-2">👤 OneID Profile</h2>
+            <p class="text-muted">Secure Identity Dashboard</p>
+
+            <div class="alert alert-success">
+                ✔ Status: VERIFIED
+            </div>
+
+        </div>
+
+        <!-- 🧾 IDENTITY DATA -->
+        <div class="mb-4">
+
+            <p><strong>OneID Number:</strong> {{ user.oneid_number }}</p>
+            <p><strong>Name:</strong> {{ user.first_name }}</p>
+            <p><strong>Surname:</strong> {{ user.last_name }}</p>
+            <p><strong>Birth Date:</strong> {{ user.birth_date }}</p>
+            <p><strong>Gender:</strong> {{ user.gender }}</p>
+            <p><strong>EMBG:</strong> {{ user.embg }}</p>
+            <p><strong>Document No:</strong> {{ user.document_number }}</p>
+            <p><strong>Country:</strong> {{ user.country }}</p>
+            <p><strong>City:</strong> {{ user.city }}</p>
+            <p><strong>Address:</strong> {{ user.address }}</p>
+            <p><strong>Expiry Date:</strong> {{ user.expiry_date }}</p>
+
+        </div>
+
+        <hr>
+
+        <!-- ⚙️ ACTION SECTION (YOUR EXISTING FEATURES) -->
         <div class="d-grid gap-3">
-
-            <a href="/sign" class="btn btn-outline-primary btn-lg">
-                ✍️ Sign Document
-            </a>
-
-            <a href="/verify" class="btn btn-outline-primary btn-lg">
-                🔍 Verify Signature
-            </a>
-
-            <a href="/history" class="btn btn-outline-primary btn-lg">
-                📜 Signature History
-            </a>
-
-            <hr>
 
             <a href="/logout" class="btn btn-danger btn-lg">
                 🚪 Logout
