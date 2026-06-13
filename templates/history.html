@@ -1,39 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Signature History{% endblock %}
+{% block title %}Login History{% endblock %}
 
 {% block content %}
 
 <div class="card p-4" style="width:800px;">
 
-    <h2>Your Signature History</h2>
-    <p class="text-muted">All documents you have signed</p>
+    <h2>Login History</h2>
+    <p class="text-muted">
+        All successful logins to your OneID account
+    </p>
 
     {% if records %}
 
         <table class="table table-striped mt-3">
             <thead>
                 <tr>
-                    <th>Document</th>
-                    <th>Signature (preview)</th>
-                    <th>Timestamp</th>
+                    <th>Date & Time</th>
+                    <th>IP Address</th>
+                    <th>Status</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for r in records %}
                 <tr>
-                    <td>{{ r.document }}</td>
-                    <td style="font-family: monospace; font-size: 11px;">
-                        {{ r.signature[:30] }}...
+                    <td>{{ r.login_time }}</td>
+                    <td>{{ r.ip_address }}</td>
+                    <td>
+                        <span class="badge bg-success">
+                            Success
+                        </span>
                     </td>
-                    <td>{{ r.timestamp }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
+
         </table>
 
     {% else %}
-        <p>No signatures yet.</p>
+        <p>No login history available.</p>
     {% endif %}
 
     <a href="/dashboard" class="btn btn-primary w-100 mt-3">

@@ -47,6 +47,16 @@ def init_db():
         )
     """)
 
+    # 📜 LOGIN HISTORY TABLE
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS login_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        login_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+        ip_address TEXT
+        )
+    """)
+
     conn.commit()
     conn.close()
 

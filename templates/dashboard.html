@@ -6,47 +6,39 @@
 
 <div class="center-wrapper">
 
-    <div class="app-card">
+    <div class="app-card text-center">
 
-        <!-- 👤 IDENTITY PROFILE SECTION -->
-        <div class="text-center mb-4">
+        <h2>Welcome to OneID</h2>
 
-            <h2 class="mb-2">👤 OneID Profile</h2>
-            <p class="text-muted">Secure Identity Dashboard</p>
+        <p class="text-muted">
+            Secure Identity Dashboard
+        </p>
 
-            <div class="alert alert-success">
-                ✔ Status: VERIFIED
-            </div>
-
+        <div class="alert alert-success mt-3">
+            ✔ Identity Verified
         </div>
 
-        <!-- 🧾 IDENTITY DATA -->
-        <div class="mb-4">
+        <p>
+            <strong>OneID Number:</strong><br>
+            {{ user.oneid_number }}
+        </p>
 
-            <p><strong>OneID Number:</strong> {{ user.oneid_number }}</p>
-            <p><strong>Name:</strong> {{ user.first_name }}</p>
-            <p><strong>Surname:</strong> {{ user.last_name }}</p>
-            <p><strong>Birth Date:</strong> {{ user.birth_date }}</p>
-            <p><strong>Gender:</strong> {{ user.gender }}</p>
-            <p><strong>EMBG:</strong> {{ user.embg }}</p>
-            <p><strong>Document No:</strong> {{ user.document_number }}</p>
-            <p><strong>Country:</strong> {{ user.country }}</p>
-            <p><strong>City:</strong> {{ user.city }}</p>
-            <p><strong>Address:</strong> {{ user.address }}</p>
-            <p><strong>Expiry Date:</strong> {{ user.expiry_date }}</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
 
-        </div>
+            <a href="/profile" class="btn btn-primary btn-lg">
+                My Profile
+            </a>
 
-        <hr>
-
-        <!-- ⚙️ ACTION SECTION (YOUR EXISTING FEATURES) -->
-        <div class="d-grid gap-3">
+            <a href="/history" class="btn btn-primary btn-lg">
+                Login History
+            </a>
 
             <a href="/logout" class="btn btn-danger btn-lg">
-                🚪 Logout
+                Logout
             </a>
 
         </div>
+</div>
 
     </div>
 

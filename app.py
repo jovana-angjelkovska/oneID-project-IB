@@ -53,18 +53,27 @@ def register():
 
     if request.method == "POST":
 
+        import bcrypt
+
         username = request.form["username"]
         password = request.form["password"]
         email = request.form["email"]
         phone = request.form["phone"]
 
+        # 🔐 HASH PASSWORD HERE (IMPORTANT)
+        hashed_password = bcrypt.hashpw(
+            password.encode('utf-8'),
+            bcrypt.gensalt()
+        ).decode('utf-8')
+
         email_code = generate_code()
         phone_code = str(random.randint(100000, 999999))
 
+        # 📦 STORE HASHED PASSWORD IN SESSION (NOT RAW)
         session["registration"] = {
             "user": {
                 "username": username,
-                "password": password,
+                "password": hashed_password,
                 "email": email,
                 "phone": phone
             },
@@ -91,21 +100,46 @@ def login():
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        # 🔐 STEP 1: fetch user ONLY by username
         cursor.execute("""
             SELECT * FROM users
-            WHERE username = ? AND password = ?
-        """, (username, password))
+            WHERE username = ?
+        """, (username,))
 
         user = cursor.fetchone()
-        conn.close()
 
         if not user:
+            conn.close()
             return "Invalid username or password"
 
-        session["username"] = username
-        session["verified_identity"] = False
+        # 🔐 STEP 2: verify hashed password
+        import bcrypt
 
-        # If user still hasn't done identity verification
+        if not bcrypt.checkpw(
+            password.encode('utf-8'),
+            user["password"].encode('utf-8')
+        ):
+            conn.close()
+            return "Invalid username or password"
+
+        # 📜 Save login history
+        cursor.execute("""
+            INSERT INTO login_history
+            (username, ip_address)
+            VALUES (?, ?)
+        """, (
+            username,
+            request.remote_addr
+        ))
+
+        conn.commit()
+        conn.close()
+
+        session["username"] = username
+
+        # Identity status
+        session["verified_identity"] = bool(user["identity_verified"])
+
         if user["identity_verified"] == 0:
             return redirect("/identity-verification")
 
@@ -125,14 +159,31 @@ def dashboard():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # 👤 user profile data
     cursor.execute("""
         SELECT * FROM users WHERE username = ?
     """, (session["username"],))
-
     user = cursor.fetchone()
+
+    # 📜 last login info (optional but recommended)
+    cursor.execute("""
+        SELECT login_time, ip_address
+        FROM login_history
+        WHERE username = ?
+        ORDER BY login_time DESC
+        LIMIT 2
+    """, (session["username"],))
+
+    logins = cursor.fetchall()
+    last_login = logins[1] if len(logins) > 1 else None
+
     conn.close()
 
-    return render_template("dashboard.html", user=user)
+    return render_template(
+        "dashboard.html",
+        user=user,
+        last_login=last_login
+    )
 
 @app.route("/sign", methods=["GET", "POST"])
 def sign():
@@ -230,16 +281,20 @@ def history():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT document, signature, timestamp
-        FROM signatures
+        SELECT login_time, ip_address
+        FROM login_history
         WHERE username = ?
-        ORDER BY timestamp DESC
+        ORDER BY login_time DESC
     """, (session["username"],))
 
     records = cursor.fetchall()
+
     conn.close()
 
-    return render_template("history.html", records=records)
+    return render_template(
+        "history.html",
+        records=records
+    )
 
 @app.route("/debug-signatures")
 def debug_signatures():
@@ -423,6 +478,30 @@ def identity_result():
         session["verified_identity"] = False
 
     return render_template("identity_verified.html", status=status)
+
+@app.route("/profile")
+def profile():
+
+    if "username" not in session:
+        return redirect("/login")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM users
+        WHERE username = ?
+    """, (session["username"],))
+
+    user = cursor.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "profile.html",
+        user=user
+    )
 
 if __name__ == "__main__":
      # TEMP DEBUG (remove later)
